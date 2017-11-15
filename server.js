@@ -9,7 +9,7 @@ app.listen(3000, (request, response) => {
 });
 
 app.get("/", (request, response) => {
-	response.render("home", {
+	response.render("bruinplay", {
 		title: "Insert Title Here",
 		content: "Hello, World"
 	})
