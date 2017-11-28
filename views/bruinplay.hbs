@@ -24,26 +24,49 @@
 </head>
 <body>
 
-	<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+    <div id="overlay">
+        <div id="box">
+            <h2>Add a Song</h2>
+            <form id="addsong" method="POST" action="/songs/add">
+                <input type="text" id="addsong_title" name="title" placeholder="Title..." />
+                <input type="text" id="addsong_artist" name="artist" placeholder="Artist..." />
+                <input type="text" id="addsong_album" name="album" placeholder="Album..." />
+                <input type="text" id="addsong_length" name="length" placeholder="Song Length..." />
+                <input type="text" id="addsong_genre" name="genre" placeholder="Genre..." />
+
+                <input type="submit" value="Add Song" />
+                    <input type="button" value="Clear" onClick="clearForm()" />
+                <input type="button" value="Close" onClick="setOverlayDisplay(false)" />
+            </form>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-  	    <a class="navbar-brand" href="#">Bruinplay</a>
+        <a class="navbar-brand" href="#">Navbar</a>
 
-  	    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    	    <form class="form-inline my-2 my-lg-0 offset-md-9">
-      	        <input class="form-control mr-sm-2" type="text" placeholder="Search">
-      	        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    	    </form>
-  	    </div>
-	</nav>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Delete Song</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
 
     <div class="container">
         <div class="row music-row">
             <!-- xs (phones), sm (tablets), md (desktops), and lg (larger desktops) -->
             <div class="col-md-3"> 
-                <img class="music" src="images/add.png">
+                <img class="add-music" onClick="setOverlayDisplay(true)" src="images/add.png">
             </div>
+
             <div class="col-md-3">
                 <div class="itemsContainer">
                     <div class="play">
@@ -64,6 +87,24 @@
             <span class="text-muted"></span>
         </div>
     </footer>
+
+    <script type="text/javascript">
+        function setOverlayDisplay(show) {
+            document.getElementById('overlay').style.display = show ? "block" : "none";
+        }
+
+        function clearForm() {
+            document.getElementById('addbook_title').value = "";
+            document.getElementById('addbook_artist').value = "";
+            document.getElementById('addbook_album').value = "";
+            document.getElementById('addbook_length').value = "";
+            document.getElementById('addbook_genre').value = "";
+        }
+
+        function setLocation(url) {
+            window.location = url;
+        }
+    </script>
 
 </body>
 </html>

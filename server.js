@@ -75,12 +75,76 @@ app.get('/error', function (request, response) {
 	response.send('The song is invalid.');
 });
 
+// Makes a database call to find all songs and pass them to our Handlebars view
+app.get('/library', function (request, response) {
+	Song.findAll().then(function (results) {
+		response.render('library', {
+			songs: results
+		});
+	});
+});
+
+/**
+ * Define the route to add a book to the library. We are posted the name, artist, album,
+ * length of the song, and genre.
+ * If the inputs are valid, create a new song objects and inserts it into the database.
+ * Redirect to the library (to re-render the page)
+ * If the inputs are not valid, render the error page.
+ */
+app.post('/songs/add', function (request, response) {
+	let inputName = request.body.name;
+	let inputArtist = request.body.artist;
+	let inputAlbum = request.body.album;
+	let inputLength = parseInt(request.body.length);
+	let inputGenre = request.body.genre;
+
+	if (inputName.length > 0 && inputArtist.length > 0 && inputAlbum.length > 0 && inputLength > 0 && inputGenre > 0) {
+		// Creates a new row in our database with the input data then reloads http://localhost:3000/library
+		// to see the new list of songs
+		Song.create({
+			name: inputName,
+			artist: inputArtist,
+			album: inputAlbum,
+			length: inputLength,
+			genre: inputGenre
+		}).then(function () {
+			response.redirect('/library');
+		});
+	} else {
+		console.log("You tried to add an invalid song into the library.");
+		response.redirect('/error');
+	}
+
+});
+
+/**
+ * Delete a song by its name and artist. We defined a variable in our route, and express puts its
+ * into request.params.isbn, since we named the variables 'name' and 'artist' in the route path.
+ * We first find the song object in the database by finding by name and artist, then we remove
+ * that object in the database table and redirect to /library.
+ */
+// app.get('/songs/delete/:name', function (request, response) {
+// 	// Get one book where the ISBN matches the one from the parameter in the URL
+// 	// then delete that book from the database and redirect to /library to see 
+// 	// the updated list of books
+// 	Book.find({
+// 		where: {
+// 			isbn: request.params.isbn
+// 		}
+// 	}).then(function(book) {
+// 		return book.destroy();
+// 	}).then(function() {
+// 		response.redirect('/library');		
+// 	})
+// });
+
+
+
 // function attachEventHandlers() {
-// 	$('.play .play-button').on('click', handleMusicClick);
+// 	$('.add-musc').on('click', handleAddMusic);
 // }
 
-// function handleMusicClick(event) {
-// 	const target = $(event.target);
+// function handleAddMusic(event) {
 // 	const play = $('.play');
 // 	const button = $('play-button');
 
