@@ -11,13 +11,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/js/script.js"></script>
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="css/styles.css">
-
-    <script src="server.js"></script>
 
     <link rel="icon" href="images/icon.png" type="image/x-icon" />
 
@@ -27,17 +26,25 @@
     <div id="overlay">
         <div id="box">
             <h2>Add a Song</h2>
-            <form id="addsong" method="POST" action="/songs/add">
-                <input type="text" id="addsong_title" name="title" placeholder="Title..." />
-                <input type="text" id="addsong_artist" name="artist" placeholder="Artist..." />
-                <input type="text" id="addsong_album" name="album" placeholder="Album..." />
-                <input type="text" id="addsong_length" name="length" placeholder="Song Length..." />
-                <input type="text" id="addsong_genre" name="genre" placeholder="Genre..." />
+            <form id="addsong" method="POST" enctype="multipart/form-data" action="/songs/add">
+                <input class="textinput" type="text" id="addsong_title" name="title" placeholder="Title..." />
+                <input class="textinput" type="text" id="addsong_artist" name="artist" placeholder="Artist..." />
+                <input class="textinput" type="text" id="addsong_album" name="album" placeholder="Album..." />
+                <input class="textinput" type="text" id="addsong_length" name="length" placeholder="Song Length..." />
+                <input class="textinput" type="text" id="addsong_genre" name="genre" placeholder="Genre..." />
+                <label for="addsong_art">Album Art</label> 
+                <input type="file" id="addsong_art" name="art">
+                <label for="addsong_mp3">Mp3</label>
+                <input type="file" id="addsong_mp3" name="mp3">
 
                 <input type="submit" value="Add Song" />
                     <input type="button" value="Clear" onClick="clearForm()" />
                 <input type="button" value="Close" onClick="setOverlayDisplay(false)" />
             </form>
+           <!--  <form method="post" enctype="multipart/form-data" action="/upload">
+                <input type="file" name="file">
+                <input type="submit" value="Submit">
+            </form> -->
         </div>
     </div>
 
@@ -45,48 +52,55 @@
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="/library">BruinPlay</a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Delete Song</a>
+                    <a class="nav-link" onClick="setOverlayDisplay(true)">Add Song</a>
                 </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
+            <!-- <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="text" placeholder="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
+            </form> -->
         </div>
     </nav>
 
     <div class="container">
         <div class="row music-row">
             <!-- xs (phones), sm (tablets), md (desktops), and lg (larger desktops) -->
-            <div class="col-md-3"> 
-                <img class="add-music" onClick="setOverlayDisplay(true)" src="images/add.png">
-            </div>
-
-            <div class="col-md-3">
+            
+            <!-- <div class="col-md-3 col-sm-4"> 
                 <div class="itemsContainer">
                     <div class="play">
                         <img src="/images/play.png">
                     </div>
                     <div class="music opacity-effect"> 
-                        <a href="#">  <img src="/images/add.png"></a>
+                        <img src="/images/add.png"></a>
                     </div>
                 </div>
-            </div>
-
+            </div> -->
+            
+            {{#each songs}}
+                <div class="col-md-3 col-sm-4">
+                    <div class="itemsContainer">
+                        <div class="play">
+                            <img src="/images/play.png">
+                        </div>
+                        <div class="music opacity-effect"> 
+                            <img src="{{this.art}}">
+                        </div>   
+                    </div>
+                </div>
+            {{/each}}
 
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <span class="text-muted"></span>
-        </div>
-    </footer>
+    <div class="footer">
+        <p>Footer</p>
+    </div>
 
     <script type="text/javascript">
         function setOverlayDisplay(show) {
@@ -94,11 +108,11 @@
         }
 
         function clearForm() {
-            document.getElementById('addbook_title').value = "";
-            document.getElementById('addbook_artist').value = "";
-            document.getElementById('addbook_album').value = "";
-            document.getElementById('addbook_length').value = "";
-            document.getElementById('addbook_genre').value = "";
+            document.getElementById('addsong_title').value = "";
+            document.getElementById('addsong_artist').value = "";
+            document.getElementById('addsong_album').value = "";
+            document.getElementById('addsong_length').value = "";
+            document.getElementById('addsong_genre').value = "";
         }
 
         function setLocation(url) {
