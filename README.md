@@ -102,4 +102,10 @@ $ npm server.js
   - Finally, try to implement adding/deleting songs.
   - **Save your files often, and constantly test your website.** If you try to build too much at once, chances are your code will have a lot of bugs–and the more code you have, the harder it will be to find them.
   - Don’t be afraid to ask for help from your peers or mentors! We’re all here to help each other succeed. :)
+  
+Notes:
+- Only compatible with HTML5.
+- Only tested with Chrome.
+- Must put .jpg/.jpeg/.png and .mp3 files in public/media before attempting to upload them.
+- Audio duration will appear after 5 seconds of the website loading (details in documentation).
 
