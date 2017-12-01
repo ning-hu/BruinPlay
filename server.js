@@ -18,10 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Set up where our application will look for client-side files (HTML, CSS, JS)
 app.set('view engine', 'hbs');
 
-// // Set up file upload for album art
-// app.use(express.bodyParser({uploadDir:'/public/images'}));
-// var path = require('path'),
-//     fs = require('fs');
+
 
 
 
@@ -58,7 +55,7 @@ const Song = sequelize.define('song', {
 	title: { type: Sequelize.STRING },
 	artist: { type: Sequelize.STRING },
 	album: { type: Sequelize.STRING },
-	length: { type: Sequelize.STRING },
+	// length: { type: Sequelize.INTEGER },
 	genre: { type: Sequelize.STRING },
 	art: { type: Sequelize.STRING },
 	mp3: { type: Sequelize.STRING }
@@ -87,7 +84,7 @@ Song.sync({ force: true }).then(function () {
 }).then(function (songs) {
 	// After inserting all initial songs into database, loop over and print out the titles
 	for (var i = 0; i < songs.length; i++) {
-		console.log(songs[i].title);
+		console.log(songs[i].mp3);
 	}
 })
 
@@ -136,15 +133,17 @@ app.post('/songs/add', function (request, response) {
 	let inputTitle = request.body.title;
 	let inputArtist = request.body.artist;
 	let inputAlbum = request.body.album;
-	let inputLength = parseInt(request.body.length);
+	// let inputLength = parseInt(request.body.length);
 	let inputGenre = request.body.genre;
 	let inputArt = request.body.art;
 	let inputMp3 = request.body.mp3;
 
-	// if (!request.files) return response.status(400).send('No files were uploaded.');
-
-	if (inputTitle.length > 0 && inputArtist.length > 0 && inputAlbum.length > 0 && 
-		inputLength > 0 && inputGenre.length > 0 && inputArt.length > 0 && inputMp3.length > 0 ) {
+	if (inputTitle.length > 0 && 
+		inputArtist.length > 0 && 
+		inputAlbum.length > 0 && 
+		inputGenre.length > 0 && 
+		inputArt.length > 0 && 
+		inputMp3.length > 0 ) {
 		// Creates a new row in our database with the input data then reloads http://localhost:3000/library
 		// to see the new list of songs
 
@@ -152,7 +151,6 @@ app.post('/songs/add', function (request, response) {
 			title: inputTitle,
 			artist: inputArtist,
 			album: inputAlbum,
-			length: inputLength,
 			genre: inputGenre,
 			art: inputArt,
 			mp3: inputMp3
@@ -163,13 +161,13 @@ app.post('/songs/add', function (request, response) {
 		console.log("You tried to add an invalid song into the library.");
 		response.redirect('/error');
 	}
-
+// 
 });
 
 /**
- * Delete a song by its title and artist. We defined a variable in our route, and express puts its
- * into request.params.album,, since we named the variables 'name' and 'artist' in the route path.
- * We first find the song object in the database by finding by name and artist, then we remove
+ * Delete a song by its title. We defined a variable in our route, and express puts its
+ * into request.params.album,, since we named the variable 'title' in the route path.
+ * We first find the song object in the database by finding by title, then we remove
  * that object in the database table and redirect to /library.
  */
 app.get('/songs/delete/:title', function (request, response) {
@@ -178,119 +176,88 @@ app.get('/songs/delete/:title', function (request, response) {
 	// the updated list of songs
 	Song.find({
 		where: {
-			title: request.params.title,
-			artist: request.params.artist
+			title: request.params.title
 		}
 	}).then(function(song) {
 		return song.destroy();
 	}).then(function() {
 		response.redirect('/library');		
 	})
-
 });
 
+app.get('/songs/add-time/:title', function (request, response) {
+	// Get one book where the title matches the one from the parameter in the URL
+	// then delete that book from the database and redirect to /library to see 
+	// the updated list of books
+	console.log("trying to work...");
+	var getting = "/media/" + document.getElmentById("play-button").getAttribute("mp3");
+	var mySound = new Audio(getting);
+    var time = mySound.duration; // => duration, in seconds
+    var min = Math.trunc(time/60);
+    var sec = time%60;
+
+	Song.find({
+		where: {
+			title: request.params.title
+		}
+	}).then(function(song) {
+		song.time = min + ":" + sec;
+		console.log("got data!");
+		return;
+	}).then(function() {
+		response.redirect('/library');		
+	})
+});
+
+// my attempt with multiple parameters
+// app.get(['/songs/delete/:title/', '/songs/delete/:artist/'], function (request, response) {
+// 	// Get one song where the title matches the one from the parameter in the URL
+// 	// then delete that song from the database and redirect to /library to see 
+// 	// the updated list of songs
+// 	Song.find({
+// 		where: {
+// 			// title: request.params.title,
+// 			artist: request.params.artist
+// 		}
+// 	}).then(function(song) {
+// 		return song.destroy();
+// 	}).then(function() {
+// 		response.redirect('/library');		
+// 	})
+
+// });
+
 function init() {
+	/*
+	 * Songs from musopen.org
+	 */
 	var initSongs = [
 		{
-			title: "erw",
-			artist: "ghj",
-			album: "fds",
-			length: 8888,
-			genre: "dsa",
-			art: "/images/add.png",
-			mp3: "/Users/ninghu/Documents/Music/King.mp3"
+			title: "Moonlight Sonata - I. Adagio sostenuto",
+			artist: "Beethoven, performed by Paul Pitman",
+			album: "None",
+			genre: "Classical",
+			art: "yosemite_bg.jpg",
+			mp3: "Sonata No. 14 in C Sharp Minor Moonlight, Op. 27 No. 2 - I. Adagio sostenuto.mp3"
 		},
 
 		{
-			title: "erw",
-			artist: "ghj",
-			album: "fds",
-			length: 8888,
-			genre: "dsa",
-			art: "/images/add.png",
-			mp3: "/Users/ninghu/Documents/Music/King.mp3"
+			title: "Moonlight Sonata - II. Allegretto",
+			artist: "Beethoven, performed by Paul Pitman",
+			album: "None",
+			genre: "Classical",
+			art: "yosemite_bg.jpg",
+			mp3: "Sonata No. 14 in C Sharp Minor Moonlight, Op. 27 No. 2 - II. Allegretto.mp3"
 		},
 
 		{
-			title: "erw",
-			artist: "ghj",
-			album: "fds",
-			length: 8888,
-			genre: "dsa",
-			art: "/images/add.png",
-			mp3: "/Users/ninghu/Documents/Music/King.mp3"
-		},
-
-		{
-			title: "erw",
-			artist: "ghj",
-			album: "fds",
-			length: 8888,
-			genre: "dsa",
-			art: "/images/add.png",
-			mp3: "/Users/ninghu/Documents/Music/King.mp3"
-		},
-
-		{
-			title: "erw",
-			artist: "ghj",
-			album: "fds",
-			length: 8888,
-			genre: "dsa",
-			art: "/images/add.png",
-			mp3: "/Users/ninghu/Documents/Music/King.mp3"
-		},
-
-		{
-			title: "erw",
-			artist: "ghj",
-			album: "fds",
-			length: 8888,
-			genre: "dsa",
-			art: "/images/add.png",
-			mp3: "/Users/ninghu/Documents/Music/King.mp3"
-		},
-
-		{
-			title: "erw",
-			artist: "ghj",
-			album: "fds",
-			length: 8888,
-			genre: "dsa",
-			art: "/images/add.png",
-			mp3: "/Users/ninghu/Documents/Music/King.mp3"
-		},
-
-		{
-			title: "erw",
-			artist: "ghj",
-			album: "fds",
-			length: 8888,
-			genre: "dsa",
-			art: "/images/add.png",
-			mp3: "/Users/ninghu/Documents/Music/King.mp3"
-		},
-
-		{
-			title: "erw",
-			artist: "ghj",
-			album: "fds",
-			length: 8888,
-			genre: "dsa",
-			art: "/Users/ninghu/Documents/Music/While You Were Sleeping OST/Lee Jong Suk – While You Were Sleeping OST Part.12/cover.jpg",
-			mp3: "/Users/ninghu/Documents/Music/King.mp3"
-		},
-
-		{
-			title: "erw",
-			artist: "ghj",
-			album: "fds",
-			length: 8888,
-			genre: "dsa",
-			art: "/images/add.png",
-			mp3: "/Users/ninghu/Documents/Music/King.mp3"
+			title: "Moonlight Sonata - III. Presto",
+			artist: "Beethoven, performed by Paul Pitman",
+			album: "None",
+			genre: "Classical",
+			art: "yosemite_bg.jpg",
+			mp3: "Sonata No. 14 in C Sharp Minor Moonlight, Op. 27 No. 2 - III. Presto.mp3"
 		}
-
 	];
 
 	return initSongs;

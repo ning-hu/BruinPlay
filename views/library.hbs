@@ -1,124 +1,180 @@
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	  <title>BruinPlay</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	    <title>BruinPlay</title>
 
-	  <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	    <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="css/fonts.css">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="/js/script.js"></script>
+        <link rel="icon" href="media/icon.png" type="image/x-icon" />
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+        <!-- for audio -->
+        <link rel='stylesheet prefetch' href='http://cdn.plyr.io/2.0.13/plyr.css'>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 
-    <link rel="stylesheet" href="css/styles.css">
+        <script>
+        /* 
+         * Audio duration will be displayed after 5 seconds.
+         * getDuration must be declared up here or there is
+         * a risk that it will be undefined when it is called.
+         * 
+         * At the same time, since getDuration is defined so
+         * early, the line with id="time-display {{this.title}}"
+         * may not exist yet. Hence, the delay.
+         * 
+         * May get ERR_CACHE_OPERATION_NOT_SUPPORTED 
+         * Not sure what that does or how to fix it.
+         */
+        function getDuration(songURL, songTitle) {
+            setTimeout(function() {
+                var time;
+                var audio = new Audio();
+                audio.src = '/media/' + songURL;
+                var currTitle = songTitle;
+                console.log("calld");
 
-    <link rel="icon" href="images/icon.png" type="image/x-icon" />
+                audio.addEventListener('loadedmetadata', function() {
+                    console.log("Playing " + audio.src + ", for: " + audio.duration + "seconds.");
+                    var minutes = parseInt(audio.duration / 60, 10);
+                    var seconds = parseInt(audio.duration % 60);
 
-</head>
-<body>
+                    time = minutes+":"+seconds;
+                    document.getElementById("time-display " + currTitle).textContent = time;
+                });
 
-    <div id="overlay">
-        <div id="box">
-            <h2>Add a Song</h2>
-            <form id="addsong" method="POST" enctype="multipart/form-data" action="/songs/add">
-                <input class="textinput" type="text" id="addsong_title" name="title" placeholder="Title..." />
-                <input class="textinput" type="text" id="addsong_artist" name="artist" placeholder="Artist..." />
-                <input class="textinput" type="text" id="addsong_album" name="album" placeholder="Album..." />
-                <input class="textinput" type="text" id="addsong_length" name="length" placeholder="Song Length..." />
-                <input class="textinput" type="text" id="addsong_genre" name="genre" placeholder="Genre..." />
-                <label for="addsong_art">Album Art</label> 
-                <input type="file" id="addsong_art" name="art">
-                <label for="addsong_mp3">Mp3</label>
-                <input type="file" id="addsong_mp3" name="mp3">
+            return;
+            }, 5000);
+        }
+        </script>
 
-                <input type="submit" value="Add Song" />
+    </head>
+    <body>
+
+        <div id="overlay">
+            <div id="box">
+                <h2>Add a Song</h2>
+                <form id="addsong" method="POST" action="/songs/add">
+                    <input class="textinput" type="text" id="addsong_title" name="title" placeholder="Title..." />
+                    <input class="textinput" type="text" id="addsong_artist" name="artist" placeholder="Artist..." />
+                    <input class="textinput" type="text" id="addsong_album" name="album" placeholder="Album..." />
+<!--                 <input class="textinput" type="text" id="addsong_length" name="length" placeholder="Song Length..." />
+ -->                <input class="textinput" type="text" id="addsong_genre" name="genre" placeholder="Genre..." />
+
+                    <label for="addsong_art">Album Art</label> 
+                    <input type="file" accept=".png, .jpg, .jpeg" id="addsong_art" name="art">
+                    <label for="addsong_mp3">Mp3</label>
+                    <input type="file" accept=".mp3" id="addsong_mp3" name="mp3">
+
+                    <input type="submit" value="Add Song" />
                     <input type="button" value="Clear" onClick="clearForm()" />
-                <input type="button" value="Close" onClick="setOverlayDisplay(false)" />
-            </form>
-           <!--  <form method="post" enctype="multipart/form-data" action="/upload">
-                <input type="file" name="file">
-                <input type="submit" value="Submit">
-            </form> -->
+                    <input type="button" value="Close" onClick="setOverlayDisplay(false)" />
+                </form>
+            </div>
         </div>
-    </div>
 
-    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <a class="navbar-brand" href="/library">BruinPlay</a>
+        <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/library">BruinPlay Library</a>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" onClick="setOverlayDisplay(true)">Add Song</a>
-                </li>
-            </ul>
-            <!-- <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form> -->
-        </div>
-    </nav>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" onClick="setOverlayDisplay(true)">Add Song</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
 
-    <div class="container">
-        <div class="row music-row">
+        <div class="container">
+            <div class="row music-row">
             <!-- xs (phones), sm (tablets), md (desktops), and lg (larger desktops) -->
             
-            <!-- <div class="col-md-3 col-sm-4"> 
-                <div class="itemsContainer">
-                    <div class="play">
-                        <img src="/images/play.png">
-                    </div>
-                    <div class="music opacity-effect"> 
-                        <img src="/images/add.png"></a>
-                    </div>
-                </div>
-            </div> -->
-            
-            {{#each songs}}
-                <div class="col-md-3 col-sm-4">
-                    <div class="itemsContainer">
-                        <div class="play">
-                            <img src="/images/play.png">
+                {{#each songs}}
+                    <div class="col-md-3 col-sm-4">
+                        <div class="itemsContainer">    
+                            <div class="play"> 
+                                <a class="delete" href="/songs/delete/{{this.title}}"><span class="glyphicon glyphicon-remove-circle"></span></a>
+                                <!-- attempt at multiple delete params -->
+                                <!-- <a class="delete" href="javascript:deleteSong('{{this.title}}', '{{this.artist}}');"><span class="glyphicon glyphicon-remove-circle"></span></a> -->
+                                <div class="title-display">{{this.title}}</div>
+                                <div class="artist-display">{{this.artist}}</div>
+                                <div class="album-display">{{this.album}}</div>
+                                <div class="genre-display">{{this.genre}}</div>
+                                <img id="play-button" mp3="{{this.mp3}}" style="height:20px;width:30px;padding-top:5px;" src="/media/play.png" onclick="playSong('{{this.mp3}}', '{{this.title}}', '{{this.artist}}')" >
+                                <div id="time-display {{this.title}}" style="padding-top: 0px;font-size: 50%;">{{this.time}}</div>
+                            </div>
+
+                            <div class="music opacity-effect" style="width:100%;height:200px;overflow:hidden"> 
+                                <img src="/media/{{this.art}}" onload="getDuration('{{this.mp3}}', '{{this.title}}')">
+                            </div>   
                         </div>
-                        <div class="music opacity-effect"> 
-                            <img src="{{this.art}}">
-                        </div>   
+
                     </div>
-                </div>
-            {{/each}}
+                {{/each}}
 
+            </div>
         </div>
-    </div>
 
-    <div class="footer">
-        <p>Footer</p>
-    </div>
 
-    <script type="text/javascript">
-        function setOverlayDisplay(show) {
-            document.getElementById('overlay').style.display = show ? "block" : "none";
-        }
+        <style>
+            /* Plyr Overrides
+             * ================================================== 
+             * NOTE: The styles were added inline because Prefixfree 
+             * needs access to your styles and they must be inlined 
+             * if they are on local disk!
+             */
 
-        function clearForm() {
-            document.getElementById('addsong_title').value = "";
-            document.getElementById('addsong_artist').value = "";
-            document.getElementById('addsong_album').value = "";
-            document.getElementById('addsong_length').value = "";
-            document.getElementById('addsong_genre').value = "";
-        }
+            .plyr--audio .plyr__controls {
+                background-color:transparent;
+                border:none;
+                color:#000000;
+                padding:0px 20px 10px 13px;
+                width:100%;
+            }
 
-        function setLocation(url) {
-            window.location = url;
-        }
-    </script>
+            .plyr--audio .plyr__controls button.tab-focus:focus,
+            .plyr--audio .plyr__controls button:hover,
+            .plyr__play-large {
+                background:rgba(0,0,0,.1);
+            }
 
-</body>
+            .plyr__progress--played, .plyr__volume--display {
+                color:rgba(0,0,0,.1);
+            }
+
+            .plyr--audio .plyr__progress--buffer,
+            .plyr--audio .plyr__volume--display {
+                background:rgba(0,0,0,.1);
+            }
+
+            .plyr--audio .plyr__progress--buffer {
+                color:rgba(0,0,0,.1);
+            }
+
+        </style>
+
+        <div class="footer">
+            <p class="center"> Current Song - Artist </p>
+            <div id="audio_player">
+                <audio id="audio_player_mp3" controls="controls">
+                    <!-- The way the source is initially defined will cause
+                         the following error when the library is loaded:
+                         GET http://localhost:3000/undefined 404 (Not Found)-->
+                    <source src="undefined" type="audio/mp3">
+                </audio>
+            </div>
+
+            <script src='http://cdn.plyr.io/2.0.13/plyr.js'></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+            <script src="js/script.js"></script>
+        </div>
+
+    </body>
 </html>
