@@ -107,5 +107,5 @@ Notes:
 - Only compatible with HTML5.
 - Only tested with Chrome.
 - Must put .jpg/.jpeg/.png and .mp3 files in public/media before attempting to upload them.
-- Audio duration will appear after 5 seconds of the website loading (reasons in documentation).
+- Audio duration will appear after 5 seconds of the website loading (reasons in code comments).
 
