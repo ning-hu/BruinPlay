@@ -5,11 +5,11 @@
 }
 
 body {
-    background-color: #cdcdcd;
+    background-color: #C6EFFC;
 }
 
 .navbar {
-    background-color: #80D7FF;
+    background-color: #FDFD96;
 }
 
 .container {
@@ -137,7 +137,7 @@ span.glyphicon {
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: #80D7FF;
+    background-color: #FDFD96;
     height: 80px;
     text-align: center;
     z-index: 100;
